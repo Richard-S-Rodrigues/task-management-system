@@ -1,7 +1,22 @@
+using Ecommerce.Server.Data;
+using TaskManagementSystem.Server.Services.TaskService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IDbAccess, DbAccess>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddControllers();
 builder.Services.AddRazorPages();
+
+builder.Configuration
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true) 
+    .AddEnvironmentVariables();
+
+MigrationRunner.RunMigrations(builder.Configuration.GetConnectionString("DefaultConnection")!);
 
 var app = builder.Build();
 
