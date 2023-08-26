@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IDbAccess, DbAccess>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddControllers();
-builder.Services.AddRazorPages();
 
 builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
@@ -29,13 +28,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseAuthorization();
-
-app.MapRazorPages();
 
 app.MapControllers();
 
@@ -44,4 +38,4 @@ app.Map("/", async context =>
     await context.Response.WriteAsync("Migrations executed successfully.");
 });
 
-app.Run();
+await app.RunAsync();
