@@ -1,6 +1,6 @@
 using Npgsql;
 
-namespace Ecommerce.Server.Data;
+namespace TaskManagementSystem.Server.Data;
 
 public static class MigrationRunner
 {

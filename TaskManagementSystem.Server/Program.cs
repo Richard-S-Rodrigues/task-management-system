@@ -1,4 +1,4 @@
-using Ecommerce.Server.Data;
+using TaskManagementSystem.Server.Data;
 using TaskManagementSystem.Server.Services.TaskService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,5 +36,12 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapControllers();
+
+app.Map("/", async context =>
+{
+    await context.Response.WriteAsync("Migrations executed successfully.");
+});
 
 app.Run();
