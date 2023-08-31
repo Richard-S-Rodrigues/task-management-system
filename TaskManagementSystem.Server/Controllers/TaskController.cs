@@ -42,7 +42,7 @@ public class TaskController: ControllerBase
   }
 
   [HttpPut("{id}")]
-  public async Task<ActionResult> Update(long id, [FromBody] TaskModel request)
+  public async Task<ActionResult> Update([FromRoute] long id, [FromBody] TaskModel request)
   {
     await _taskService.Update(id, request);
     var task = await _taskService.GetById(id);

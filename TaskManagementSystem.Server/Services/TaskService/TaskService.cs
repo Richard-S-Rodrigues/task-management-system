@@ -14,13 +14,13 @@ public class TaskService : ITaskService
     await _dbAccess.SaveData<TaskModel, dynamic>(
       """
         INSERT INTO task (name, description, status, sub_tasks, created_at, updated_at) 
-        VALUES (@Name, @Description, @Status, @SubTasks, @CreatedAt, @UpdatedAt)
+        VALUES (@Name, @Description, @Status, @SubTaskIds, @CreatedAt, @UpdatedAt)
       """,
       new {
         Name = request.Name,
         Description = request.Description,
         Status = request.Status,
-        SubTasks = request.SubTasks.Select(x => x.Id),
+        SubTaskIds = request.SubTaskIds,
         CreatedAt = request.CreatedAt,
         UpdatedAt = request.UpdatedAt
       }
@@ -41,7 +41,7 @@ public class TaskService : ITaskService
           name AS Name, 
           description AS Description,
           status AS Status,
-          sub_tasks AS SubTasks,
+          sub_tasks AS SubTaskIds,
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
         FROM task
@@ -59,7 +59,7 @@ public class TaskService : ITaskService
           name AS Name, 
           description AS Description,
           status AS Status,
-          sub_tasks AS SubTasks,
+          sub_tasks AS SubTaskIds,
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
         FROM task WHERE id = @Id
@@ -79,7 +79,7 @@ public class TaskService : ITaskService
           name = @Name, 
           description = @Description, 
           status = @Status, 
-          sub_tasks = @SubTasks,
+          sub_tasks = @SubTaskIds,
           updated_at = @UpdatedAt 
         WHERE t.id = @Id
       """,
@@ -88,7 +88,7 @@ public class TaskService : ITaskService
         Name = request.Name,
         Description = request.Description,
         Status = request.Status,
-        SubTasks = request.SubTasks.Select(x => x.Id),
+        SubTaskIds = request.SubTaskIds,
         UpdatedAt = request.UpdatedAt
       }
     );
