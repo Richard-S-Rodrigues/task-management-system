@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Server.Models;
 using TaskManagementSystem.Server.Services.TaskService;
@@ -5,6 +6,7 @@ using TaskManagementSystem.Server.Services.TaskService;
 namespace TaskManagementSystem.Server.Controllers;
 
 [ApiController]
+[EnableCors("corsapp")]
 [Route("[controller]/[action]")]
 public class TaskController: ControllerBase
 {

@@ -1,12 +1,19 @@
 using TaskManagementSystem.Server.Data;
 using TaskManagementSystem.Server.Services.TaskService;
+using TaskManagementSystem.Server.Services.TaskListService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IDbAccess, DbAccess>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskListService, TaskListService>();
 builder.Services.AddControllers();
+
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
@@ -28,6 +35,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("corsapp");
 
 app.UseAuthorization();
 

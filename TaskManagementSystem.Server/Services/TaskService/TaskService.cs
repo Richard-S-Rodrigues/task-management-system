@@ -13,13 +13,13 @@ public class TaskService : ITaskService
   {
     await _dbAccess.SaveData<TaskModel, dynamic>(
       """
-        INSERT INTO task (name, description, status, sub_tasks, created_at, updated_at) 
-        VALUES (@Name, @Description, @Status, @SubTaskIds, @CreatedAt, @UpdatedAt)
+        INSERT INTO task (name, description, task_list_id, sub_tasks, created_at, updated_at) 
+        VALUES (@Name, @Description, @TaskListId, @SubTaskIds, @CreatedAt, @UpdatedAt)
       """,
       new {
         Name = request.Name,
         Description = request.Description,
-        Status = request.Status,
+        TaskListId = request.TaskListId,
         SubTaskIds = request.SubTaskIds,
         CreatedAt = request.CreatedAt,
         UpdatedAt = request.UpdatedAt
@@ -40,7 +40,7 @@ public class TaskService : ITaskService
           id AS Id, 
           name AS Name, 
           description AS Description,
-          status AS Status,
+          task_list_id AS TaskListId,
           sub_tasks AS SubTaskIds,
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
@@ -58,7 +58,7 @@ public class TaskService : ITaskService
           id AS Id, 
           name AS Name, 
           description AS Description,
-          status AS Status,
+          task_list_id AS TaskListId,
           sub_tasks AS SubTaskIds,
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
@@ -77,8 +77,8 @@ public class TaskService : ITaskService
       """
         UPDATE task t SET 
           name = @Name, 
-          description = @Description, 
-          status = @Status, 
+          description = @Description,
+          task_list_id = @TaskListId,  
           sub_tasks = @SubTaskIds,
           updated_at = @UpdatedAt 
         WHERE t.id = @Id
@@ -87,7 +87,7 @@ public class TaskService : ITaskService
         Id = id,
         Name = request.Name,
         Description = request.Description,
-        Status = request.Status,
+        TaskListId = request.TaskListId,
         SubTaskIds = request.SubTaskIds,
         UpdatedAt = request.UpdatedAt
       }
