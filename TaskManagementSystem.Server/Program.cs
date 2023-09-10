@@ -1,6 +1,7 @@
 using TaskManagementSystem.Server.Data;
 using TaskManagementSystem.Server.Services.TaskService;
 using TaskManagementSystem.Server.Services.TaskListService;
+using TaskManagementSystem.Server.Services.TaskBoardService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IDbAccess, DbAccess>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskListService, TaskListService>();
+builder.Services.AddScoped<ITaskBoardService, TaskBoardService>();
 builder.Services.AddControllers();
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>

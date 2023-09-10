@@ -13,11 +13,12 @@ public class TaskListService : ITaskListService
   {
     await _dbAccess.SaveData<TaskList, dynamic>(
       """
-        INSERT INTO task_list (name, created_at, updated_at) 
-        VALUES (@Name, @CreatedAt, @UpdatedAt)
+        INSERT INTO task_list (name, task_board_id, created_at, updated_at) 
+        VALUES (@Name, @TaskBoardId, @CreatedAt, @UpdatedAt)
       """,
       new {
         Name = request.Name,
+        TaskBoardId = request.TaskBoardId,
         CreatedAt = request.CreatedAt,
         UpdatedAt = request.UpdatedAt
       }
@@ -35,7 +36,8 @@ public class TaskListService : ITaskListService
       """
         SELECT
           id AS Id, 
-          name AS Name, 
+          name AS Name,
+          task_board_id AS TaskBoardId, 
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
         FROM task_list
@@ -51,6 +53,7 @@ public class TaskListService : ITaskListService
         SELECT
           id AS Id, 
           name AS Name, 
+          task_board_id AS TaskBoardId,
           created_at AS CreatedAt, 
           updated_at AS UpdatedAt
         FROM task_list WHERE id = @Id
@@ -67,13 +70,15 @@ public class TaskListService : ITaskListService
     await _dbAccess.SaveData<TaskList, dynamic>(
       """
         UPDATE task_list tl SET 
-          name = @Name, 
+          name = @Name,
+          task_board_id = @TaskBoardId, 
           updated_at = @UpdatedAt 
         WHERE tl.id = @Id
       """,
       new {
         Id = id,
         Name = request.Name,
+        TaskBoardId = request.TaskBoardId,
         UpdatedAt = request.UpdatedAt
       }
     );

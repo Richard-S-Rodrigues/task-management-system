@@ -39,8 +39,7 @@ public class TaskController: ControllerBase
   public async Task<ActionResult> Create(TaskModel request)
   {
     await _taskService.Create(request);
-    var task = await _taskService.GetById(request.Id);
-    return Ok(task);
+    return Ok();
   }
 
   [HttpPut("{id}")]
