@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import TaskListCard from '../components/task-list-card/TaskListCard.vue'
+import TaskBoard from '../components/task-board/TaskBoard.vue'
+import BoardsDrawer from '../components/boards-drawer/BoardsDrawer.vue'
 </script>
 
 <template>
-  <main class="bg-gray-100 h-screen w-screen p-4">
-    <task-list-card />
+  <main class="flex">
+    <boards-drawer />
+    <task-board />
   </main>
 </template>
