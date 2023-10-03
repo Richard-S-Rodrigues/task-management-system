@@ -38,20 +38,15 @@ public class TaskListController: ControllerBase
   [HttpPost]
   public async Task<ActionResult> Create(TaskList request)
   {
-    await _taskListService.Create(request);
-    return Ok();
+    var result = await _taskListService.Create(request);
+    return Ok(result);
   }
 
   [HttpPut("{id}")]
   public async Task<ActionResult> Update([FromRoute] long id, [FromBody] TaskList request)
   {
-    await _taskListService.Update(id, request);
-    var taskList = await _taskListService.GetById(id);
-    if (taskList is null)
-    {
-      return NotFound("Task list not found");
-    }
-    return Ok(taskList);
+    var result = await _taskListService.Update(id, request);
+    return Ok(result);
   }
 
   [HttpDelete("{id}")]
@@ -59,5 +54,12 @@ public class TaskListController: ControllerBase
   {
     await _taskListService.Delete(id);
     return Ok();
+  }
+
+  [HttpGet("{id}")]
+  public async Task<ActionResult<List<TaskList>>> GetByBoardId(long id)
+  {
+    var taskLists = await _taskListService.GetByBoardId(id);
+    return Ok(taskLists);
   }
 }

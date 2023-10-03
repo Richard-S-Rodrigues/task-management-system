@@ -6,7 +6,7 @@ public interface IDbAccess
     string connectionId = "DefaultConnection"
   );
 
-  Task SaveData<T, U>(
+  Task<int?> SaveData<T, U>(
     string storedProcedure,
     U parameters,
     string connectionId = "DefaultConnection"

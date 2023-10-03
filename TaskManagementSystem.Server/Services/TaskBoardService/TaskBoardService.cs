@@ -9,20 +9,25 @@ public class TaskBoardService : ITaskBoardService
   {
     _dbAccess = dbAccess;
   }
-  public async Task Create(TaskBoard request)
+  public async Task<TaskBoard> Create(TaskBoard request)
   {
-    await _dbAccess.SaveData<TaskBoard, dynamic>(
+    TaskBoard data = new TaskBoard 
+    {
+      Name = request.Name,
+      Description = request.Description,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
+    var generatedId = await _dbAccess.SaveData<TaskBoard, dynamic>(
       """
         INSERT INTO task_board (name, description, created_at, updated_at) 
         VALUES (@Name, @Description, @CreatedAt, @UpdatedAt)
       """,
-      new {
-        Name = request.Name,
-        Description = request.Description,
-        CreatedAt = request.CreatedAt,
-        UpdatedAt = request.UpdatedAt
-      }
+      data
     );
+    data.Id = generatedId;
+    return data;
   }
 
   public async Task Delete(long id)
@@ -65,8 +70,17 @@ public class TaskBoardService : ITaskBoardService
     return result.FirstOrDefault();
   }
 
-  public async Task Update(long id, TaskBoard request)
+  public async Task<TaskBoard> Update(long id, TaskBoard request)
   {
+    TaskBoard data = new TaskBoard 
+    {
+      Id = id,
+      Name = request.Name,
+      Description = request.Description,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
     await _dbAccess.SaveData<TaskBoard, dynamic>(
       """
         UPDATE task_board tb SET 
@@ -75,12 +89,8 @@ public class TaskBoardService : ITaskBoardService
           updated_at = @UpdatedAt 
         WHERE tb.id = @Id
       """,
-      new {
-        Id = id,
-        Name = request.Name,
-        Description = request.Description,
-        UpdatedAt = request.UpdatedAt
-      }
+      data
     );
+    return data;
   }
 }

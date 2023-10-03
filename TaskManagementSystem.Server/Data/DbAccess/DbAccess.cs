@@ -21,7 +21,7 @@ public class DbAccess: IDbAccess
     return await connection.QueryAsync<T>(storedProcedure, parameters, commandType: CommandType.Text);
   }
 
-  public async Task SaveData<T, U>(
+  public async Task<int?> SaveData<T, U>(
     string storedProcedure,
     U parameters,
     string connectionId = "DefaultConnection"
@@ -29,5 +29,22 @@ public class DbAccess: IDbAccess
   {
     using var connection = new NpgsqlConnection(_config.GetConnectionString(connectionId));
     await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.Text);
+    
+    storedProcedure += "RETURNING Id";
+
+    try
+    {
+      int generatedId = connection.QuerySingle<int>(storedProcedure, parameters);
+      return generatedId;
+    } 
+    catch(InvalidOperationException ex)
+    {
+      Console.WriteLine("No records were inserted or retrieved: " + ex.Message);
+    }
+    catch(Exception ex) 
+    {
+      Console.WriteLine("An error occured: " + ex.Message);
+    }
+    return null;
   }
 }

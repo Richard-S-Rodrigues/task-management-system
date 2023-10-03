@@ -9,22 +9,29 @@ public class TaskService : ITaskService
   {
     _dbAccess = dbAccess;
   }
-  public async Task Create(TaskModel request)
+  public async Task<TaskModel> Create(TaskModel request)
   {
-    await _dbAccess.SaveData<TaskModel, dynamic>(
+    TaskModel data = new TaskModel 
+    {
+      Name = request.Name,
+      Description = request.Description,
+      TaskListId = request.TaskListId,
+      SubTaskIds = request.SubTaskIds,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
+    var generatedId = await _dbAccess.SaveData<TaskModel, dynamic>(
       """
         INSERT INTO task (name, description, task_list_id, sub_tasks, created_at, updated_at) 
         VALUES (@Name, @Description, @TaskListId, @SubTaskIds, @CreatedAt, @UpdatedAt)
       """,
-      new {
-        Name = request.Name,
-        Description = request.Description,
-        TaskListId = request.TaskListId,
-        SubTaskIds = request.SubTaskIds,
-        CreatedAt = request.CreatedAt,
-        UpdatedAt = request.UpdatedAt
-      }
+      data
     );
+
+    data.Id = generatedId;
+
+    return data;
   }
 
   public async Task Delete(long id)
@@ -71,8 +78,19 @@ public class TaskService : ITaskService
     return result.FirstOrDefault();
   }
 
-  public async Task Update(long id, TaskModel request)
+  public async Task<TaskModel> Update(long id, TaskModel request)
   {
+    TaskModel data = new TaskModel 
+    {
+      Id = id,
+      Name = request.Name,
+      Description = request.Description,
+      TaskListId = request.TaskListId,
+      SubTaskIds = request.SubTaskIds,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
     await _dbAccess.SaveData<TaskModel, dynamic>(
       """
         UPDATE task t SET 
@@ -83,14 +101,9 @@ public class TaskService : ITaskService
           updated_at = @UpdatedAt 
         WHERE t.id = @Id
       """,
-      new {
-        Id = id,
-        Name = request.Name,
-        Description = request.Description,
-        TaskListId = request.TaskListId,
-        SubTaskIds = request.SubTaskIds,
-        UpdatedAt = request.UpdatedAt
-      }
+      data
     );
+
+    return data;
   }
 }

@@ -9,20 +9,26 @@ public class TaskListService : ITaskListService
   {
     _dbAccess = dbAccess;
   }
-  public async Task Create(TaskList request)
+  public async Task<TaskList> Create(TaskList request)
   {
-    await _dbAccess.SaveData<TaskList, dynamic>(
+    TaskList data = new TaskList 
+    {
+      Name = request.Name,
+      TaskBoardId = request.TaskBoardId,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
+    var generatedId = await _dbAccess.SaveData<TaskList, dynamic>(
       """
         INSERT INTO task_list (name, task_board_id, created_at, updated_at) 
         VALUES (@Name, @TaskBoardId, @CreatedAt, @UpdatedAt)
       """,
-      new {
-        Name = request.Name,
-        TaskBoardId = request.TaskBoardId,
-        CreatedAt = request.CreatedAt,
-        UpdatedAt = request.UpdatedAt
-      }
+      data
     );
+    data.Id = generatedId;
+
+    return data;
   }
 
   public async Task Delete(long id)
@@ -65,8 +71,17 @@ public class TaskListService : ITaskListService
     return result.FirstOrDefault();
   }
 
-  public async Task Update(long id, TaskList request)
+  public async Task<TaskList> Update(long id, TaskList request)
   {
+    TaskList data = new TaskList 
+    {
+      Id = id,
+      Name = request.Name,
+      TaskBoardId = request.TaskBoardId,
+      CreatedAt = request.CreatedAt,
+      UpdatedAt = request.UpdatedAt
+    };
+
     await _dbAccess.SaveData<TaskList, dynamic>(
       """
         UPDATE task_list tl SET 
@@ -75,12 +90,27 @@ public class TaskListService : ITaskListService
           updated_at = @UpdatedAt 
         WHERE tl.id = @Id
       """,
-      new {
-        Id = id,
-        Name = request.Name,
-        TaskBoardId = request.TaskBoardId,
-        UpdatedAt = request.UpdatedAt
+      data
+    );
+
+    return data;
+  }
+
+  public async Task<List<TaskList>> GetByBoardId(long boardId)
+  {
+    var result = await _dbAccess.GetData<TaskList, dynamic>(
+      """
+        SELECT
+          id AS Id, 
+          name AS Name,
+          task_board_id AS TaskBoardId, 
+          created_at AS CreatedAt, 
+          updated_at AS UpdatedAt
+        FROM task_list WHERE task_board_id = @TaskBoardId
+      """, new {
+        TaskBoardId = boardId
       }
     );
+    return result.ToList();
   }
 }

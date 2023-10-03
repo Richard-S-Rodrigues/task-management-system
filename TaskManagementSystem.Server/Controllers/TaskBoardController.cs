@@ -38,20 +38,15 @@ public class TaskBoardController: ControllerBase
   [HttpPost]
   public async Task<ActionResult> Create(TaskBoard request)
   {
-    await _taskBoardService.Create(request);
-    return Ok();
+    var result = await _taskBoardService.Create(request);
+    return Ok(result);
   }
 
   [HttpPut("{id}")]
   public async Task<ActionResult> Update([FromRoute] long id, [FromBody] TaskBoard request)
   {
-    await _taskBoardService.Update(id, request);
-    var taskBoard = await _taskBoardService.GetById(id);
-    if (taskBoard is null)
-    {
-      return NotFound("Task board not found");
-    }
-    return Ok(taskBoard);
+    var result = await _taskBoardService.Update(id, request);
+    return Ok(result);
   }
 
   [HttpDelete("{id}")]
